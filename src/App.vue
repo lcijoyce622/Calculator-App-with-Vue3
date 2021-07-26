@@ -1,7 +1,7 @@
 <template>
 <h1 class="title">Calculator App with Vue3</h1>
   <div class="container">
-      <a href="https://github.com/lcijoyce622"  class="row" target="_blank">
+      <a href="https://github.com/lcijoyce622/Calculator-App-with-Vue3"  class="row" target="_blank">
         <img class="col-1" src="./assets/github.svg" alt="" />
         <p class="col account">lcijoyce622</p>
         </a>

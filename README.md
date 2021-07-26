@@ -1,5 +1,8 @@
 # week2
 
+## DEMO
+https://lcijoyce622.github.io/Calculator-App-with-Vue3/
+
 ## Project setup
 ```
 npm install
