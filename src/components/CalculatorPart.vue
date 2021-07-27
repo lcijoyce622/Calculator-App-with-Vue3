@@ -13,7 +13,7 @@
       <div class="screen">
         <h1>{{ result }}</h1>
         <p v-if="operator === '='">{{ result }}</p>
-        <p v-else-if="preValue === null || preValue == 0">請輸入數字開始計算</p>
+        <p v-else-if="preValue === null ||result === 0">請輸入數字開始計算</p>
         <p v-else>{{ preValue }}{{ operator }}{{ value }}</p>
       </div>
     </div>
@@ -98,56 +98,71 @@ export default {
       operator: "",
       value: null,
       preValue: null,
-      isFloat: null,
+      isFloat: false,
+      floatDigits: 0,
     };
   },
   methods: {
     numClick(num) {
-      if (this.isFloat === true) {
-        //判斷是否為小數
-        this.result = this.result.toString();
-        // 先將數字型態轉成小數
-        if (this.result.includes(".")) {
-          //如果已經有按過小數點
-          this.result += num;
-        } else {
-          // 第一次按小數點
-          this.result = this.result + "." + num;
-        }
+      this.calculate(num, this.isFloat, this.operator);
+    },
+    calculateFloat(num, floatDigits, operator) {
+      //如果已經有按過小數點
+      if (num === 0) {
+        //小數點後面按.0xxx的時候
+        this.result = this.result.toFixed(floatDigits);
+        return;
+      }
+      this.result += num / Math.pow(10, floatDigits);
+      this.result = this.result.toFixed(floatDigits);
+      if (operator === "") {
         this.result = parseFloat(this.result);
-        //轉回數字型態
         this.preValue = this.result;
-      } else {
-        this.calculate(num);
+        return;
+      }
+      if (operator === "=") {
+        this.clearResult();
+        this.result = num;
+        return;
+      }
+      if (operator !== "") {
+        this.result = parseFloat(this.result);
+        this.value = this.result;
+        return;
       }
     },
-    calculate(num) {
-      if (this.operator === "") {
-        //輸入preValue
-        if (this.result === 0) {
+    calculate(num, isFloat, operator) {
+      if (isFloat) {
+        this.result = parseFloat(this.result);
+        this.floatDigits++;
+        this.calculateFloat(num, this.floatDigits, operator);
+        return;
+      }
+      if (isFloat === false) {
+        if (operator === "") {
+          //輸入preValue
+          this.result === 0
+            ? (this.result = num)
+            : (this.result = this.result * 10 + num);
           // 判斷是否為個位數
-          this.result = num;
-          this.preValue = num;
-        } else {
-          //十位數
-          this.result = this.result * 10 + num;
-          this.preValue = this.result;
+
+          this.preValue = this.result; //將顯示數字推入preValue
+          return;
         }
-      } else if (this.operator === "=") {
-        //重製operator(計算出答案之後沒清空直接又鍵入新值)
-        this.operator = "";
-        this.result = num;
-        this.preValue = num;
-        this.value = null;
-      } else {
-        //放入第二個數值
-        if (this.result === this.preValue && this.value === null) {
+        if (operator === "=") {
+          //重製operator(計算出答案之後沒清空直接又鍵入新值)
+          this.clearResult();
           this.result = num;
-          this.value = num;
-        } else {
-          //十位數
-          this.result = this.result * 10 + num;
+          return;
+        }
+        if (operator !== "") {
+          //放入第二個數值
+          this.value === null
+            ? (this.result = num)
+            : (this.result = this.result * 10 + num);
+          // 判斷是否為個位數
           this.value = this.result;
+          return;
         }
       }
     },
@@ -155,14 +170,42 @@ export default {
       this.value = null;
       this.operator = operator;
       this.isFloat = false; //按完運算符重製下一個value的小數點
+      this.floatDigits = 0; //重至下一個value的小數點
+    },
+    setReslutFloatLimit() {
+      //找結果的小數位數多的以避免溢位
+      const preVal =
+        this.preValue !== (this.preValue | 0)
+          ? parseInt(this.preValue.toString().split(".")[1].length)
+          : 0;
+      const val =
+        this.value !== (this.value | 0)
+          ? parseInt(this.value.toString().split(".")[1].length)
+          : 0;
+
+      const count = Math.max(preVal, val);
+      this.result = parseFloat(this.result.toFixed(count));
     },
     getResult() {
       switch (this.operator) {
         case "+":
           this.result = this.preValue + this.value;
+          if (
+            this.preValue !== (this.preValue | 0) ||
+            this.value !== (this.value | 0)
+          ) {
+            this.setReslutFloatLimit();
+          }
+
           break;
         case "-":
           this.result = this.preValue - this.value;
+          if (
+            this.preValue !== (this.preValue | 0) ||
+            this.value !== (this.value | 0)
+          ) {
+            this.setReslutFloatLimit();
+          }
           break;
         case "*":
           this.result = this.preValue * this.value;
@@ -191,29 +234,41 @@ export default {
       this.preValue = null;
       this.value = null;
       this.operator = "";
-      this.isFloat = null;
+      this.isFloat = false;
+      this.floatDigits = 0;
     },
     deleteResult() {
-      if (this.operator === "" || this.operator === "=") {
-        if (this.result < 10) {
-          //個位數按DEL直接歸零
-          this.result = 0;
-          this.preValue = this.result;
-        } else {
-          //一般狀況按DEL
-          this.result = this.result.toString();
-          if (this.result.charAt(this.result.length - 2) === ".") {
-            //判斷DEL刪到小數點的狀況
-            this.result = this.result.slice(0, this.result.length - 2);
-            this.isFloat = false;
-            this.preValue = this.result;
-          } else {
-            this.result = this.result.slice(0, this.result.length - 1);
-          }
-          this.result = parseFloat(this.result);
-          this.preValue = this.result;
-        }
+      if (this.result === (this.result | 0) && this.result < 10) {
+        //個位數按DEL直接歸零
+        this.result = 0;
+        return;
       }
+      //一般狀況按DEL
+      if (this.result !== (this.result | 0)) {
+        this.floatDigits--;
+        this.result = this.result.toString(); //轉string
+        if (this.floatDigits === 0) {
+          this.isFloat = false;
+          this.result = this.result.slice(0, this.result.length - 2);
+        } else {
+          this.isFloat = true;
+          this.result = this.result.slice(0, this.result.length - 1);
+        }
+        //是小數的話小數的位數floatDigits要跟著減掉
+        this.result !== (this.result | 0)
+          ? (this.result = parseFloat(this.result))
+          : (this.result = parseInt(this.result));
+      } else {
+        //不是小數直接轉number
+        this.isFloat = false;
+        this.result = this.result.toString(); //轉string
+        this.result = this.result.slice(0, this.result.length - 1);
+        this.result = parseInt(this.result);
+      }
+      this.operator === ""
+        ? (this.preValue = this.result)
+        : (this.value = this.result);
+      //判斷是preValue還是value
     },
   },
 };

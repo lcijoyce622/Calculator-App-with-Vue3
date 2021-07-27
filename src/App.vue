@@ -3,7 +3,7 @@
   <div class="container">
     <div class="row">
       <calculator-part class="col-sm-5 col-12  mt-2"></calculator-part>
-      <calculator-history class="col-sm-5 col-12 mt-6"></calculator-history>
+      <calculator-history class="col-sm-5 col-12 mt-5"></calculator-history>
     </div>
   </div>
 </template>
