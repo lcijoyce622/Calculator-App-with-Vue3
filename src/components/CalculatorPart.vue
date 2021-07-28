@@ -103,8 +103,19 @@ export default {
     };
   },
   methods: {
+    isOverFlow(){
+        this.result.toString().length > 13
+        ? (this.result = this.result.toString().slice(0, 12))
+        : console.log("沒有超過");
+      this.isFloat == true
+        ? (this.result = parseFloat(this.result))
+        : (this.result = parseInt(this.result));
+        
+    },
     numClick(num) {
+      this.isOverFlow();
       this.calculate(num, this.isFloat, this.operator);
+    
     },
     calculateFloat(num, floatDigits, operator) {
       //如果已經有按過小數點
@@ -194,6 +205,7 @@ export default {
       this.result = parseFloat(this.result.toFixed(count));
     },
     getResult() {
+      
       switch (this.operator) {
         case "+":
           this.result = this.preValue + this.value;
@@ -220,6 +232,7 @@ export default {
           this.result = this.preValue / this.value;
           break;
       }
+      this.isOverFlow();
       this.storeHistory.push(
         this.preValue + this.operator + this.value + "=" + this.result
       );
@@ -229,6 +242,7 @@ export default {
       );
       this.preValue = this.result;
       this.operator = "=";
+      
     },
     addDot() {
       this.result += "."; //這裡只有顯示在頁面上的小數點
