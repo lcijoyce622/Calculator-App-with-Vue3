@@ -312,7 +312,7 @@ export default {
       text-align: start;
       color: rgb(165, 165, 165);
       display: flex;
-      // height: 100%;
+      height: 20px;
       align-items: center;
       margin: 0;
     }
