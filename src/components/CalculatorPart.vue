@@ -2,7 +2,7 @@
   <div id="calculator">
     <a
       href="https://github.com/lcijoyce622/Calculator-App-with-Vue3"
-      class="row"
+      class="row account_title"
       target="_blank"
     >
       <img class="col-1" src="../assets/github.svg" alt="" />
@@ -103,19 +103,17 @@ export default {
     };
   },
   methods: {
-    isOverFlow(){
-        this.result.toString().length > 13
+    isOverFlow() {
+      this.result.toString().length > 13
         ? (this.result = this.result.toString().slice(0, 12))
         : console.log("沒有超過");
       this.isFloat == true
         ? (this.result = parseFloat(this.result))
         : (this.result = parseInt(this.result));
-        
     },
     numClick(num) {
       this.isOverFlow();
       this.calculate(num, this.isFloat, this.operator);
-    
     },
     calculateFloat(num, floatDigits, operator) {
       //如果已經有按過小數點
@@ -205,7 +203,6 @@ export default {
       this.result = parseFloat(this.result.toFixed(count));
     },
     getResult() {
-      
       switch (this.operator) {
         case "+":
           this.result = this.preValue + this.value;
@@ -242,7 +239,6 @@ export default {
       );
       this.preValue = this.result;
       this.operator = "=";
-      
     },
     addDot() {
       this.result += "."; //這裡只有顯示在頁面上的小數點
@@ -304,18 +300,25 @@ export default {
   border-radius: 10px;
   padding: 10px 1rem;
   background-color: rgba(75, 85, 99, $alpha: 1);
+  .account_title {
+      // height: 20px;
+        text-decoration: none;
+        margin:0 !important;
+      .account {
+        text-align: start;
+        color: rgb(165, 165, 165);
+        display: flex;
+
+        align-items: center;
+        margin: 0;
+      }
+    }
   .row {
     --bs-gutter-x: 0.5rem;
     margin: 0.5rem 0;
-    text-decoration: none;
-    .account {
-      text-align: start;
-      color: rgb(165, 165, 165);
-      display: flex;
-      height: 20px;
-      align-items: center;
-      margin: 0;
-    }
+  
+    
+
     .screen {
       background-color: rgba(31, 41, 55, $alpha: 1);
       border-radius: 10px;
