@@ -13,7 +13,7 @@
       <div class="screen">
         <h1>{{ result }}</h1>
         <p v-if="operator === '='">{{ result }}</p>
-        <p v-else-if="preValue === null ||result === 0">請輸入數字開始計算</p>
+        <p v-else-if="preValue === null || result === 0">請輸入數字開始計算</p>
         <p v-else>{{ preValue }}{{ operator }}{{ value }}</p>
       </div>
     </div>
@@ -120,6 +120,7 @@ export default {
         this.preValue = this.result;
         return;
       }
+
       if (operator === "=") {
         this.clearResult();
         this.result = num;
@@ -132,7 +133,14 @@ export default {
       }
     },
     calculate(num, isFloat, operator) {
+      console.log(this.operator);
       if (isFloat) {
+        if (operator === "=") {
+          //重製operator(計算出答案之後沒清空直接又鍵入新值)
+          this.clearResult();
+          this.result = num;
+          return;
+        }
         this.result = parseFloat(this.result);
         this.floatDigits++;
         this.calculateFloat(num, this.floatDigits, operator);
@@ -150,7 +158,6 @@ export default {
           return;
         }
         if (operator === "=") {
-          //重製operator(計算出答案之後沒清空直接又鍵入新值)
           this.clearResult();
           this.result = num;
           return;
@@ -196,7 +203,6 @@ export default {
           ) {
             this.setReslutFloatLimit();
           }
-
           break;
         case "-":
           this.result = this.preValue - this.value;
@@ -265,6 +271,7 @@ export default {
         this.result = this.result.slice(0, this.result.length - 1);
         this.result = parseInt(this.result);
       }
+      if (this.operator === "=") this.preValue = this.result;
       this.operator === ""
         ? (this.preValue = this.result)
         : (this.value = this.result);
@@ -281,7 +288,7 @@ export default {
   // height: auto;
   margin: auto;
   border-radius: 10px;
-  padding: 0.5rem 1rem;
+  padding: 10px 1rem;
   background-color: rgba(75, 85, 99, $alpha: 1);
   .row {
     --bs-gutter-x: 0.5rem;
