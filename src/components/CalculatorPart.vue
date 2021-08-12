@@ -104,12 +104,12 @@ export default {
   },
   methods: {
     isOverFlow() {
-      this.result.toString().length > 13
-        ? (this.result = this.result.toString().slice(0, 12))
-        : console.log("沒有超過");
-      this.isFloat == true
-        ? (this.result = parseFloat(this.result))
-        : (this.result = parseInt(this.result));
+      if (this.result.toString().length > 13) {
+        this.result = this.result.toString().slice(0, 12);
+      }
+      // this.isFloat == true
+      //   ? (this.result = parseFloat(this.result))
+      //   : (this.result = parseInt(this.result));
     },
     numClick(num) {
       this.isOverFlow();
@@ -142,7 +142,7 @@ export default {
       }
     },
     calculate(num, isFloat, operator) {
-      console.log(this.operator);
+      // console.log(this.operator);
       if (isFloat) {
         if (operator === "=") {
           //重製operator(計算出答案之後沒清空直接又鍵入新值)
@@ -301,23 +301,21 @@ export default {
   padding: 10px 1rem;
   background-color: rgba(75, 85, 99, $alpha: 1);
   .account_title {
-      // height: 20px;
-        text-decoration: none;
-        margin:0 !important;
-      .account {
-        text-align: start;
-        color: rgb(165, 165, 165);
-        display: flex;
+    // height: 20px;
+    text-decoration: none;
+    margin: 0 !important;
+    .account {
+      text-align: start;
+      color: rgb(165, 165, 165);
+      display: flex;
 
-        align-items: center;
-        margin: 0;
-      }
+      align-items: center;
+      margin: 0;
     }
+  }
   .row {
     --bs-gutter-x: 0.5rem;
     margin: 0.5rem 0;
-  
-    
 
     .screen {
       background-color: rgba(31, 41, 55, $alpha: 1);
